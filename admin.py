@@ -2,30 +2,35 @@ import streamlit as st
 
 title = st.text_input('Name', ' ')
 
-st.button("Mark Attendance", type="primary")
-if st.button('Click Attendance'):
-    st.write('Attendance registered')
-else:
-    st.write('Not registered')
-[connections.gsheets]
-spreadsheet = "https://docs.google.com/spreadsheets/d/1UovzMG1X88aHLXsU9k61QLR1if5BFB2LGHSCYXBxwjw/edit?usp=sharing"
+attendance_marked = False
 
+if st.button("Mark Attendance", type="primary"):
+    # Implement logic to mark attendance (e.g., write data to the sheet)
+    attendance_marked = True
+    st.write("Attendance registered")
+
+if st.button('Click Attendance'):
+    if attendance_marked:
+        st.write("Attendance already registered")
+    else:
+        st.write("Please click 'Mark Attendance' to register")
+
+# Connect to Google Sheet (assuming you need it)
 from streamlit_gsheets import GSheetsConnection
 
 # Create a connection object.
 conn = st.connection("gsheets", type=GSheetsConnection)
 
-df = conn.read()
+# Example: Read specific data from the sheet
+if attendance_marked:
+    df = conn.read(
+        worksheet="Sheet1",
+        usecols=[0, 1],  # Read columns 0 and 1
+        nrows=1,  # Read only the first row
+    )
+    for row in df.itertuples():
+        st.write(f"{row.name} has a :{row.pet}:")
 
-df = conn.read(
-    worksheet="Sheet1",
-    ttl="10m",
-    usecols=[0, 1],
-    nrows=3,
-)
-# Print results.
-for row in df.itertuples():
-    st.write(f"{row.name} has a :{row.pet}:")
 
 
 
