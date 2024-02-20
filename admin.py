@@ -1,5 +1,5 @@
 import streamlit as st
-
+pip install streamlit-gsheets
 title = st.text_input('Name', ' ')
 
 attendance_marked = False
