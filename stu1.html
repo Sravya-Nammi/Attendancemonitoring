@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students Attendance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        
+        h1 {
+            color: #333;
+        }
+
+        form {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        input {
+            width: 200px;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button.secondary {
+            background-color: #6c757d;
+        }
+
+        button.secondary:hover {
+            background-color: #495057;
+        }
+
+        button.secondary:active {
+            transform: translateY(1px);
+        }
+
+        button.secondary:focus {
+            outline: none;
+        }
+
+        #container {
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>Students Attendance</h1>
+    <form id="attendance-form">
+        <label for="enterStudentname">Student Name:</label>
+        <input type="text" id="enterStudentname" placeholder="Enter student name" required><br>
+        
+        <label for="enterSubject">Subject:</label>
+        <input type="text" id="enterSubject" placeholder="Enter subject" required><br>
+        
+        <label for="enterRegistrationNumber">Registration Number:</label>
+        <input type="number" id="enterRegistrationNumber" placeholder="Enter registration number" required><br>
+        
+        <label for="enterGraduationYear">Graduation Year:</label>
+        <input type="number" id="enterGraduationYear" placeholder="Enter graduation year" required><br>
+        
+        <label for="enterDate">Date:</label>
+        <input type="text" id="enterDate" placeholder="Enter date" required><br>
+
+        <label for="session">Choose a Session:</label>
+        <select id="session" name="session">
+          <option value="Session1" id="session1">Session1</option>
+          <option value="Session2" id="session2">Session2</option>
+          <option value="Session3" id="session3">Session3</option>
+          <option value="Session4" id="session4">Session4</option>
+        </select>
+
+        <button type="button" id="insert" style="background-color: #4CAF50;">INSERT</button>
+    </form>
+
+    <div id="findDetails">
+        <h1>Find Session Attended</h1>
+        <input id="findRegistrationNumber" type="number"> <br><br>
+        <button id="find">FIND</button>
+        <h3 id="findRegistrationCounts" type="number"></h3>
+
+        <p id="registrationNumber"></p>
+        <p id="studentName"></p>
+        <p id="subject"></p>
+        <p id="graduationYear"></p>
+        <p id="date"></p>
+
+
+    </div>
+    <script type="module">
+        // Import the Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBwW-T4xqw2pazRSdr1ICxF3eDiE45X2sY",
+            authDomain: "attendancemonitoring-fa9be.firebaseapp.com",
+            databaseURL: "https://attendancemonitoring-fa9be-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "attendancemonitoring-fa9be",
+            storageBucket: "attendancemonitoring-fa9be.appspot.com",
+            messagingSenderId: "274755009759",
+            appId: "1:274755009759:web:0d1cc5240288bb3cb4bd6a",
+            measurementId: "G-0Y9PEL49VD"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Get a reference to the Firebase database
+        const db = getDatabase();
+
+        // Function to handle form submission
+        function submitForm() {
+            // Get form data
+            const studentName = document.getElementById('enterStudentname').value;
+            const subject = document.getElementById('enterSubject').value;
+            const registrationNumber = document.getElementById('enterRegistrationNumber').value;
+            const graduationYear = document.getElementById('enterGraduationYear').value;
+            const date = document.getElementById('enterDate').value;
+            const session = document.getElementById('session').value; // Get selected session
+
+            var enterRegistrationNumber = document.querySelector("#enterRegistrationNumber");
+            var findRegistrationNumber = document.querySelector("#findRegistrationNumber");
+            var findRegistrationCounts = document.querySelector("#findRegistrationCounts");
+            
+
+
+            function FindData() {
+    const dbref = ref(db);
+
+    get(child(dbref, "https://stuedentv1-default-rtdb.firebaseio.com/" + findRegistrationNumber.value))
+    .then((snapshot)=>{
+        if(snapshot.exists()){
+            // Get the data from the snapshot
+            const data = snapshot.val();
+            
+            // Update HTML elements with the retrieved data
+            document.getElementById('registrationNumber').textContent = "Registration Number: " + data.registrationNumber;
+            document.getElementById('studentName').textContent = "Student Name: " + data.studentName;
+            document.getElementById('subject').textContent = "Subject: " + data.subject;
+            document.getElementById('graduationYear').textContent = "Graduation Year: " + data.graduationYear;
+            document.getElementById('date').textContent = "Date: " + data.date;
+        } else {
+            alert("No data found");
+        }
+    })
+    .catch((error)=>{
+        alert(error)
+    });
+}
+
+
+            // Push data to Firebase under the respective session
+            const sessionRef = ref(db, session); // Reference to the session node in Firebase
+            push(sessionRef, {
+                studentName: studentName,
+                subject: subject,
+                registrationNumber: registrationNumber,
+                graduationYear: graduationYear,
+                date: date
+            })
+            .then(() => {
+                // Reset the form after successful submission
+                document.getElementById('attendance-form').reset();
+                alert("Data inserted successfully!");
+            })
+            .catch(error => {
+                console.error("Error inserting data: ", error);
+                alert("Error occurred while inserting data. Please try again.");
+            });
+        }
+
+        
+    
+        // Add event listener to the insert button
+        document.getElementById('insert').addEventListener('click', submitForm);
+        findBtn.addEventListener('click', FindData);
+
+
+
+        
+    </script>
+</body>
+</html>
