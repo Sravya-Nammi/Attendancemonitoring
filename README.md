@@ -25,7 +25,7 @@ Includes modes for:
 - **Find:** Retrieve and display previous session records
 
 **🖼️ UI Screenshot**  
-![Attendance Form UI](https://i.imgur.com/QXD8sKI.png)
+![Attendance Form UI](https://i.imgur.com/BqlCNUW.png)
 
 ---
 
