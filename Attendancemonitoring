@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students Attendance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        
+        h1 {
+            color: #333;
+        }
+
+        form {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        input {
+            width: 200px;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button.secondary {
+            background-color: #6c757d;
+        }
+
+        button.secondary:hover {
+            background-color: #495057;
+        }
+
+        button.secondary:active {
+            transform: translateY(1px);
+        }
+
+        button.secondary:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Students Attendance</h1>
+    <form id="attendance-form">
+        <label for="enterStudentname">Student Name:</label>
+        <input type="text" id="enterStudentname" placeholder="Enter student name" required><br>
+        
+        <label for="enterSubject">Subject:</label>
+        <input type="text" id="enterSubject" placeholder="Enter subject" required><br>
+        
+        <label for="enterRegistrationNumber">Registration Number:</label>
+        <input type="number" id="enterRegistrationNumber" placeholder="Enter registration number" required><br>
+        
+        <label for="enterGraduationYear">Graduation Year:</label>
+        <input type="number" id="enterGraduationYear" placeholder="Enter graduation year" required><br>
+        
+        <label for="enterDate">Date:</label>
+        <input type="text" id="enterDate" placeholder="Enter date" required><br>
+        
+        <button type="button" id="insert" style="background-color: #4CAF50;">INSERT</button>
+        <button type="button" id="update" class="secondary" style="background-color: #FFC107;">UPDATE</button>
+        <button type="button" id="remove" class="secondary" style="background-color: #f44336;">REMOVE</button>
+    </form>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyDKKy6xFSRChctRVWuBR9OKDThJ9yzGOuE",
+            authDomain: "attendance-monitoring-81f27.firebaseapp.com",
+            databaseURL: "https://attendance-monitoring-81f27-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "attendance-monitoring-81f27",
+            storageBucket: "attendance-monitoring-81f27.appspot.com",
+            messagingSenderId: "83017043480",
+            appId: "1:83017043480:web:86a74580f3620de564fd6d",
+            measurementId: "G-T0E4FWD9CM"
+        }; 
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+      
+        
+   
+
+        import {getDatabase, ref, get, set, child, update, remove}
+        from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js" //Copy and Paste the URL from near the top of the CDN you pasted in from firebase
+        // (the one where you imported "initializeApp" from),
+        //but change "firebase-app" to "firebase-database"
+        
+
+        const db = getDatabase();
+
+        var enterStudentname = document.querySelector("#enterStudentname");
+        var enterSubject = document.querySelector("#enterSubject");
+        var enterRegistrationNumber = document.querySelector("#enterRegistrationNumber");
+        var enterGraduationYear = document.querySelector("#enterGraduationYear");
+        var enterDate = document.querySelector("#enterDate");
+       
+        
+      
+
+        var insertBtn = document.querySelector("#insert");
+        var updateBtn = document.querySelector("#update");
+        var removeBtn = document.querySelector("#remove");
+        var findBtn = document.querySelector("#find");
+
+        function InsertData() {
+            set(ref(db, "Studentattendance/"+ enterRegistrationNumber.value),{
+                Studentname: enterStudentname.value,
+                Subject: enterSubject.value,
+                RegistrationNumber: enterRegistrationNumber.value,
+                GraduationYear: enterGraduationYear.value,
+                Date: enterDate.value
+
+                
+            })
+            .then(()=>{
+                alert("Data added successfully");
+            })
+            .catch((error)=>{
+                alert(error);
+            });
+        }
+
+        
+        
+
+        function UpdateData(){
+            update(ref(db, "Studentgallery/"+ enterRegistrationNumber.value),{
+                Studentname: enterStudentname.value,
+                Subject: enterSubject.value,
+                RegistrationNumber: enterRegistrationNumber.value,
+                GraduationYear: enterGraduationYear.value,
+                Date: enterDate.value
+            })
+            .then(()=>{
+                alert("Data updated successfully");
+            })
+            .catch((error)=>{
+                alert(error);
+            });
+        }
+
+        function RemoveData(){
+            remove(ref(db, "People/"+ enterRegistrationNumber.value))
+            .then(()=>{
+                alert("Data deleted successfully");
+            })
+            .catch((error)=>{
+                alert(error);
+            });
+        }
+
+        insertBtn.addEventListener('click', InsertData);
+        updateBtn.addEventListener('click', UpdateData);
+    </script>
+</body>
+</html>
