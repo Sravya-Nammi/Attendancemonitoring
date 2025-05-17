@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students Attendance</title>
+    <style>
+        body {
+            font-family: Verdana, sans-serif;
+            text-align: center;
+            background-color: #009FE3;
+            margin: 0;
+            padding: 0;
+        }
+        
+        h1 {
+            color: #333;
+        }
+
+        form {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        input {
+            width: 200px;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button.secondary {
+            background-color: #6c757d;
+        }
+
+        button.secondary:hover {
+            background-color: #495057;
+        }
+
+        button.secondary:active {
+            transform: translateY(1px);
+        }
+
+        button.secondary:focus {
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Students Attendance</h1>
+    <form id="attendance-form">
+        <label for="enterStudentname">Student Name:</label>
+        <input type="text" id="enterStudentname" placeholder="Enter student name" required><br>
+        
+        <label for="enterMatriculationNumber">Matriculation Number:</label>
+        <input type="number" id="enterMatriculationNumber" placeholder="Enter Matriculation Number" required><br>
+        
+        <label for="programme">Choose your programme:</label>
+        <select id="programme" name="programme">
+          <option value="MSc. Industrial Engineering and International Management" id="programme1">MSc. Industrial Engineering and International Management</option>
+          <option value="M.A. International Management" id="programme2">M.A. International Management</option>
+          <option value="M.Sc .Digital Business Management and Leadership" id="programme3">M.Sc .Digital Business Management and Leadership</option>
+          <option value="M.Sc. Strategic International Management" id="programme4">M.Sc. Strategic International Management</option>
+          <option value="M.Sc. Strategic Marketing and Brand Management" id="programme5">M.Sc. Strategic Marketing and Brand Management</option>
+          <option value="M.Sc. Luxury Management" id="programme6">M.Sc. Luxury Management</option>
+        </select><br><br>
+
+        <label for="semester">Choose semester:</label>
+        <select id="semester" name="semester">
+          <option value="semester1" id="semester1">Semester1</option>
+          <option value="semester2" id="semester2">Semester2</option>
+          <option value="semester3" id="semester3">Semester3</option>
+          <option value="semester4" id="semester4">Semester4</option>
+        </select><br><br>
+
+        <label for="session">Choose a Session:</label>
+        <select id="session" name="session">
+          <option value="Session1" id="session1">Session1</option>
+          <option value="Session2" id="session2">Session2</option>
+          <option value="Session3" id="session3">Session3</option>
+          <option value="Session4" id="session4">Session4</option>
+        </select><br><br>
+
+        <button type="button" id="insert" style="background-color: #4CAF50;">INSERT</button>
+    </form>
+
+    <script type="module">
+        // Import the Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBwW-T4xqw2pazRSdr1ICxF3eDiE45X2sY",
+            authDomain: "attendancemonitoring-fa9be.firebaseapp.com",
+            databaseURL: "https://attendancemonitoring-fa9be-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "attendancemonitoring-fa9be",
+            storageBucket: "attendancemonitoring-fa9be.appspot.com",
+            messagingSenderId: "274755009759",
+            appId: "1:274755009759:web:0d1cc5240288bb3cb4bd6a",
+            measurementId: "G-0Y9PEL49VD"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Get a reference to the Firebase database
+        const db = getDatabase();
+
+        // Function to handle form submission
+        function submitForm() {
+            // Get form data
+            const studentName = document.getElementById('enterStudentname').value;
+            const MatriculationNumber = document.getElementById('enterMatriculationNumber').value;
+            const programme = document.getElementById('programme').value;
+            const semester = document.getElementById('semester').value;
+            const session = document.getElementById('session').value; // Get selected session
+
+            // Push data to Firebase under the respective session
+            const sessionRef = ref(db, session); // Reference to the session node in Firebase
+            push(sessionRef, {
+                studentName: studentName,
+                MatriculationNumber: MatriculationNumber,
+                programme: programme,
+                semester: semester,
+
+            })
+            .then(() => {
+                // Reset the form after successful submission
+                document.getElementById('attendance-form').reset();
+                alert("Data inserted successfully!");
+                // Redirect to verification.html
+                window.location.href = "verification.html";
+            })
+            .catch(error => {
+                console.error("Error inserting data: ", error);
+                alert("Error occurred while inserting data. Please try again.");
+            });
+        }
+
+        // Add event listener to the insert button
+        document.getElementById('insert').addEventListener('click', submitForm);
+    </script>
+</body>
+</html>
